@@ -1,4 +1,9 @@
 import React from "react";
 import auth from "@firebase/auth";
+import { DocumentData } from "firebase/firestore";
 
-export const AuthContext = React.createContext<auth.User | null>(null);
+type Props = {
+  user: auth.User | null,
+  config: DocumentData | null,
+}
+export const AuthContext = React.createContext<Props | null>(null);
