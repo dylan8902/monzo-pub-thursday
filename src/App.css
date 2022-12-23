@@ -4,16 +4,32 @@ html,body, .app {
   background-color: #112231;
   min-height: 100vh;
   margin: 0;
-  padding: 15px;
+  padding: 12px;
   color: #F2F8F3;
+  font-size: 18px;
+}
+
+code {
+  font-size: 180%;
 }
 
 .logo {
   height: 40vmin;
+  max-height: 250px;
   pointer-events: none;
   margin: 24px;
 }
 
 a, a:hover {
   color: #fff;
+}
+
+@media screen and (max-width: 670px) {
+  html,body, .app {
+    font-size: 12px;
+  }
+  .logo {
+    height: 20vmin;
+    margin: 12px;
+  }
 }
