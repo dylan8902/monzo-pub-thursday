@@ -2,7 +2,7 @@
 
 Private Firebase project to auto check-in to Pub Thursday using your Monzo
 
-## Why a seperate project
+## Why a separate project
 To keep your Monzo transactions private to you
 
 ## Dependencies
