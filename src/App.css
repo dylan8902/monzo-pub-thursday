@@ -1,0 +1,19 @@
+html,body, .app {
+  text-align: center;
+  font-family: Oldschool,sans-serif;
+  background-color: #112231;
+  min-height: 100vh;
+  margin: 0;
+  padding: 15px;
+  color: #F2F8F3;
+}
+
+.logo {
+  height: 40vmin;
+  pointer-events: none;
+  margin: 24px;
+}
+
+a, a:hover {
+  color: #fff;
+}
