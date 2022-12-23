@@ -14,14 +14,19 @@ function App() {
       <img src={monzo} className="monzo logo" alt="logo" />
       <img src={pint} className="pint logo" alt="logo" />
       <h1>
-        Welcome to the Monzo Pub Thursday Integration
+        Hi{user && ` ${user.displayName}`}, welcome to {user ? `your` : 'the'} Monzo Pub Thursday Integration
       </h1>
-      <p>
-        {JSON.stringify(app)}
-      </p>
-      <p>
-        {JSON.stringify(user)}
-      </p>
+      {user &&
+        <>
+          <p>Using the <a href="https://developers.monzo.com/api/playground" rel="noreferrer" target="_blank">Monzo API Playground</a>, add the following URL as a new webhook:</p>
+          <code>
+            https://us-central1-{app.options.projectId}.cloudfunctions.net/webhook
+          </code>
+          <p>
+            Any Monzo transactions created on a Pub Thursday in a valid pub will auto check-in your account ({user.email}) on the app.
+          </p>
+        </>
+     }
     </div>
   );
 }
