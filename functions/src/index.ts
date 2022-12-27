@@ -118,7 +118,7 @@ const ptAppConfig = {
   projectId: "pub-tracker-test",
 };
 const ptApp = initializeApp(ptAppConfig, "ptApp");
-const opts = {cors: true};
+const opts = {cors: true, maxInstances: 2};
 
 
 /**
