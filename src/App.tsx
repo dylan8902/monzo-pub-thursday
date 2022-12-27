@@ -5,7 +5,7 @@ import "./App.css";
 import { app } from "./Firebase";
 import { AuthContext } from "./AuthContext";
 
-const PUB_THURSDAY_URL = 'https://pubthursday.com/integrations/authorise';
+const PUB_THURSDAY_URL = 'http://localhost:3001/integrations/authorise';
 const CLIENT_ID = 'Monzo%20Integration';
 const REQUEST_URI = `https://${app.options.projectId}.web.app/authorise`;
 const REDIRECT_URI = `https://${app.options.projectId}.web.app/`;

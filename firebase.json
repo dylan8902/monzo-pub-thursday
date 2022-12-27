@@ -25,11 +25,15 @@
     "rewrites": [
       {
         "source": "/authorise",
-        "function": "authorise"
+        "run": {
+          "serviceId": "authorise"
+        }
       },
       {
         "source": "/webhook",
-        "function": "webhook"
+        "run": {
+          "serviceId": "webhook"
+        }
       }
     ]
   }
