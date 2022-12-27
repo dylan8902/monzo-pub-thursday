@@ -5,10 +5,16 @@ import "./App.css";
 import { app } from "./Firebase";
 import { AuthContext } from "./AuthContext";
 
+const PUB_THURSDAY_URL = 'https://pubthursday.com/integrations/authorise';
+const CLIENT_ID = 'Monzo%20Integration';
+const REQUEST_URI = `https://${app.options.projectId}.web.app/authorise`;
+const REDIRECT_URI = `https://${app.options.projectId}.web.app/`;
+
 function App() {
   const props = useContext(AuthContext);
   const user = props?.user;
   const config = props?.config;
+  const authoriseUrl = `${PUB_THURSDAY_URL}?client_id=${CLIENT_ID}&request_uri=${REQUEST_URI}&redirect_uri=${REDIRECT_URI}`;
 
   return (
     <div className="app">
@@ -31,10 +37,7 @@ function App() {
             </a>
             , add the following URL as a new webhook:
           </p>
-          <code>
-            https://us-central1-{app.options.projectId}
-            .cloudfunctions.net/webhook
-          </code>
+          <code>https://{app.options.projectId}.web.app/webhook</code>
 
           {config ? (
             <>
@@ -45,7 +48,11 @@ function App() {
               <code>{JSON.stringify(config)}</code>
             </>
           ) : (
-            <p>You need to link your Pub Thursday account to this integration</p>
+            <p>
+              <a href={authoriseUrl}>
+                You need to link your Pub Thursday account to this integration
+              </a>
+            </p>
           )}
         </>
       )}

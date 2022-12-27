@@ -21,6 +21,16 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/authorise",
+        "function": "authorise"
+      },
+      {
+        "source": "/webhook",
+        "function": "webhook"
+      }
     ]
   }
 }

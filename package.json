@@ -24,6 +24,9 @@
     "eject": "react-scripts eject",
     "deploy": "firebase deploy"
   },
+  "devDependencies": {
+    "firebase-tools": "^11.19.0"
+  },
   "eslintConfig": {
     "extends": [
       "react-app",
