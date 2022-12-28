@@ -37,3 +37,25 @@ To keep your Monzo transactions private to you
 
 ## Usage
 * Pay for a pint in a pub on a Thursday and you should be checked in to the pub if it has been linked
+
+
+## Development setup
+
+* Run your web project locally on http://localhost:3000:
+```sh
+npm run start
+```
+
+* Build and run your functions locally on http://localhost:5001:
+```sh
+cd functions
+npm run build
+cd ..
+firebase emulators:start
+```
+
+* Run test pub-tracker-web on http://localhost:3001:
+```sh
+cd /path/to/pub-tracker-web
+PORT=3001 npm run start
+```

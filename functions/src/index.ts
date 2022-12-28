@@ -139,10 +139,13 @@ export const webhook = onRequest(opts, async (req, res) => {
  */
 export const authorise = onRequest(opts, async (req, res) => {
   logger.info("Hello logs!", req.body);
+  if (req.body?.stsTokenManager?.refreshToken === undefined) {
+    bad("No stsTokenManager.refreshToken in request body", req.body, res);
+    return;
+  }
   const db = admin.firestore();
-  db.collection("configuration")
-      .doc("pub-thursday")
-      .set(req.body)
+  const ref = db.collection("configuration").doc("pub-thursday");
+  ref.set(req.body)
       .then(
           () => {
             console.log("Set configuration", req.body);
