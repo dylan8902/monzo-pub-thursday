@@ -10,7 +10,7 @@ To keep your Monzo transactions private to you
 * Google account
 * Pub Thursday account
 * Google Cloud Billing Account
-* Node 16
+* Node 18
 * Firebase CLI
 
 ## Setup

@@ -2,6 +2,8 @@ import {onRequest} from "firebase-functions/v2/https";
 import {logger} from "firebase-functions/v2";
 import * as admin from "firebase-admin";
 import {initializeApp} from "firebase/app";
+import {FieldValue} from "@google-cloud/firestore";
+
 import {
   getFirestore,
   query,
@@ -38,7 +40,7 @@ const EXAMPLE_MONZO = {
     merchant: {
       id: "merch_00009JRODf5MtoDPEqBed7",
       group_id: "grp_00009rTcQlE0kGfLRkwHHn",
-      name: "Lab 22",
+      name: "Victoria Park Pub",
       logo: "",
       emoji: "",
       category: "entertainment",
@@ -164,6 +166,8 @@ export const test = onRequest(opts, (req, res) => {
   // This is an example transaction at a pub
   req.body = EXAMPLE_MONZO;
 
+  const db = admin.firestore();
+
   // Only process new transactions
   if (req.body.type != "transaction.created") {
     bad("Webhook type is not supported", req.body.type, res);
@@ -189,9 +193,9 @@ export const test = onRequest(opts, (req, res) => {
 
   // Find a PT location based on the name
   const locations: PubThursdayLocation[] = [];
-  const db = getFirestore(ptApp);
+  const pTdb = getFirestore(ptApp);
   const search = query(
-      collection(db, "locations"),
+      collection(pTdb, "locations"),
       where("name", "in", [bonus(monzoName), monzoName])
   );
   let locationId = "";
@@ -208,11 +212,10 @@ export const test = onRequest(opts, (req, res) => {
     if (locationId == "" && locations.length > 0) {
       locationId = locations[0].id;
     }
-    console.log(`Pub Thursday Pubs called ${monzoName}`, locations);
+    console.log(`Pub Thursday Pubs matching ${monzoName}`, locations);
     console.log(`Chosen ${locationId} as best match`);
 
     // Get Pub Thursday config
-    const db = admin.firestore();
     db.collection("configuration")
         .doc("pub-thursday")
         .get()
@@ -228,14 +231,14 @@ export const test = onRequest(opts, (req, res) => {
 
               // Refresh access token
               const refreshUrl = `https://securetoken.googleapis.com/v1/token?key=${ptAppConfig.apiKey}`;
-              const rrefreshOptions = {
+              const refreshOptions = {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/x-www-form-urlencoded",
                 },
                 body: `grant_type=refresh_token&refresh_token=${refreshToken}`,
               };
-              fetch(refreshUrl, rrefreshOptions)
+              fetch(refreshUrl, refreshOptions)
                   .then((refreshResult) => {
                     console.info("Refresh", refreshResult);
                     refreshResult.json().then((refreshData) => {
@@ -265,7 +268,18 @@ export const test = onRequest(opts, (req, res) => {
                           .then((checkInResult) => {
                             console.info("Check-in", checkInResult);
                             checkInResult.json().then((checkInData) => {
-                              res.status(200).send({checkIn, checkInData});
+                              const result = {
+                                checkIn,
+                                checkInData,
+                                webhook: req.body,
+                                created: FieldValue.serverTimestamp(),
+                              };
+                              db.collection("check-ins")
+                                  .add(result)
+                                  .then((ref) => {
+                                    console.log("Stored check-in", ref);
+                                    res.status(200).send(result);
+                                  });
                               return;
                             });
                           })
