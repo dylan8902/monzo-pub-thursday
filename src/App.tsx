@@ -11,6 +11,8 @@ function App() {
   const props = useContext(AuthContext);
   const user = props?.user;
   const config = props?.config;
+  const successfulCheckIns = props?.successfulCheckIns || 0;
+
   const ptWebsite =
     window.location.hostname === "localhost"
       ? "http://localhost:3001"
@@ -51,19 +53,25 @@ function App() {
             </div>
           )}
 
-          <div className="todo">
-            Using the{" "}
-            <a
-              href="https://developers.monzo.com/api/playground"
-              rel="noreferrer"
-              target="_blank"
-            >
-              Monzo API Playground
-            </a>
-            , add the following URL as a new{" "}
-            <a href="https://docs.monzo.com/#registering-a-webhook">webhook</a>:
-            <code>https://{app.options.projectId}.web.app/webhook</code>
-          </div>
+          {successfulCheckIns > 0 ? (
+            <div className="todo done">
+              You have checked-in using your Monzo {successfulCheckIns} time{successfulCheckIns > 1 ? "s" : ""}
+            </div>
+          ) : (
+            <div className="todo">
+              Using the{" "}
+              <a
+                href="https://developers.monzo.com/api/playground"
+                rel="noreferrer"
+                target="_blank"
+              >
+                Monzo API Playground
+              </a>
+              , add the following URL as a new{" "}
+              <a href="https://docs.monzo.com/#registering-a-webhook">webhook</a>:
+              <code>https://{app.options.projectId}.web.app/webhook</code>
+            </div>
+          )}
         </>
       )}
     </div>
