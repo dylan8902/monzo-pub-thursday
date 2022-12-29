@@ -1,5 +1,9 @@
 {
   "projects": {
-    "default": "monzo-pub-thursday"
-  }
+    "default": "monzo-pub-thursday",
+    "test": "monzo-pub-thursday",
+    "prod": "monzo-pub-thursday"
+  },
+  "targets": {},
+  "etags": {}
 }

@@ -22,7 +22,9 @@ To keep your Monzo transactions private to you
 * Fork this repository/create from template and clone locally:
   * Update `firebase.rc` with project ID
   * Update `src/Firebase.ts` with your web app configuration
+  * Create `.env.test` and `.env.prod` with the Pub Thursday test and prod project configuration (there is an example in `.env.example`)
   * Run `firebase login` to login to Google account
+  * Run either `firebase use test` or `firebase use prod` to link to Pub Thursday test or prod
   * Run `firebase deploy` to deploy project
 * Login to your new web app with your Pub Thursday Google account
 * Back in the firebase console:
@@ -51,6 +53,7 @@ npm run start
 cd functions
 npm run build
 cd ..
+firebase use test
 firebase emulators:start
 ```
 

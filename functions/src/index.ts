@@ -3,7 +3,6 @@ import {logger} from "firebase-functions/v2";
 import * as admin from "firebase-admin";
 import {initializeApp} from "firebase/app";
 import {FieldValue} from "@google-cloud/firestore";
-
 import {
   getFirestore,
   query,
@@ -12,6 +11,7 @@ import {
   collection,
 } from "firebase/firestore";
 import {response} from "express";
+
 
 /**
  * INTERFACES
@@ -115,9 +115,9 @@ const bonus = (name: string):string => {
 
 admin.initializeApp();
 const ptAppConfig = {
-  apiKey: "AIzaSyDPj82SQ8m-NGgPXE-FVlROt-5toR4bzS8",
-  authDomain: "pub-tracker-test.firebaseapp.com",
-  projectId: "pub-tracker-test",
+  apiKey: process.env.PUB_THURSDAY_API_KEY,
+  authDomain: process.env.PUB_THURSDAY_AUTH_DOMAIN,
+  projectId: process.env.PUB_THURSDAY_PROJECT_ID,
 };
 const ptApp = initializeApp(ptAppConfig, "ptApp");
 const opts = {cors: true, maxInstances: 2};
@@ -132,40 +132,6 @@ const opts = {cors: true, maxInstances: 2};
  */
 export const webhook = onRequest(opts, async (req, res) => {
   logger.info("Hello logs!", req.body);
-  res.status(200).send(req.body.text);
-  return;
-});
-
-/**
- * Recieve a user's configuration blob and pop it in the store
- */
-export const authorise = onRequest(opts, async (req, res) => {
-  logger.info("Hello logs!", req.body);
-  if (req.body?.stsTokenManager?.refreshToken === undefined) {
-    bad("No stsTokenManager.refreshToken in request body", req.body, res);
-    return;
-  }
-  const db = admin.firestore();
-  const ref = db.collection("configuration").doc("pub-thursday");
-  ref.set(req.body)
-      .then(
-          () => {
-            console.log("Set configuration", req.body);
-            res.status(200).send({message: "Added config", config: req.body});
-          },
-          (error) => {
-            bad("Failed to set configuration", error, res);
-          }
-      );
-});
-
-/**
- * An example monzo webhook to test/demo functionality
- */
-export const test = onRequest(opts, (req, res) => {
-  // This is an example transaction at a pub
-  req.body = EXAMPLE_MONZO;
-
   const db = admin.firestore();
 
   // Only process new transactions
@@ -175,9 +141,9 @@ export const test = onRequest(opts, (req, res) => {
   }
 
   // Pull out useful information from webhook
-  const monzoName = req.body.data.merchant.name;
-  const monzoLat = req.body.data.merchant.address.latitude;
-  const monzoLng = req.body.data.merchant.address.longitude;
+  const monzoName = req.body.data.merchant?.name;
+  const monzoLat = req.body.data.merchant?.address?.latitude;
+  const monzoLng = req.body.data.merchant?.address?.longitude;
   if (monzoName === undefined) {
     bad("Missing data.merchant.name", req.body, res);
     return;
@@ -283,23 +249,57 @@ export const test = onRequest(opts, (req, res) => {
                                     res.status(200).send(result);
                                   });
                               return;
+                            }, (error) => {
+                              bad("JSON error", error.message, res);
+                              return;
                             });
                           })
                           .catch((error) => {
-                            bad("Unable to check-in", error, res);
+                            bad("Unable to check-in", error.message, res);
                             return;
                           });
                     });
                   })
                   .catch((error) => {
-                    bad("Unable to refresh access token", error, res);
+                    bad("Unable to refresh access token", error.message, res);
                     return;
                   });
             },
             (error) => {
-              bad("Failed to get Pub Thursday configuration", error, res);
+              bad("Failed to get PT configuration", error.message, res);
               return;
             }
         );
   });
+});
+
+/**
+ * Recieve a user's configuration blob and pop it in the store
+ */
+export const authorise = onRequest(opts, async (req, res) => {
+  logger.info("Hello logs!", req.body);
+  if (req.body?.stsTokenManager?.refreshToken === undefined) {
+    bad("No stsTokenManager.refreshToken in request body", req.body, res);
+    return;
+  }
+  const db = admin.firestore();
+  const ref = db.collection("configuration").doc("pub-thursday");
+  ref.set(req.body)
+      .then(
+          () => {
+            console.log("Set configuration", req.body);
+            res.status(200).send({message: "Added config", config: req.body});
+          },
+          (error) => {
+            bad("Failed to set configuration", error.message, res);
+          }
+      );
+});
+
+/**
+ * An example monzo webhook to test/demo functionality
+ */
+export const test = onRequest(opts, (req, res) => {
+  // This is an example transaction at a pub
+  res.status(200).send(EXAMPLE_MONZO);
 });
