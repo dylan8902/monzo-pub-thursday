@@ -49,8 +49,8 @@ const EXAMPLE_MONZO = {
       address: {
         short_formatted: "22 Caroline Street, Cardiff, Cf10 1fg",
         city: "Cardiff",
-        latitude: 51.4782679,
-        longitude: -3.1759621,
+        latitude: 51.4828652,
+        longitude: -3.216168,
         zoom_level: 17,
         approximate: false,
         formatted: "22 Caroline Street, Cardiff, Cf10 1fg",
@@ -267,10 +267,12 @@ export const test = onRequest(opts, (req, res) => {
                       fetch(checkInUrl, checkInOptions)
                           .then((checkInResult) => {
                             console.info("Check-in", checkInResult);
+                            const checkInStatus = checkInResult.statusText;
                             checkInResult.json().then((checkInData) => {
                               const result = {
                                 checkIn,
                                 checkInData,
+                                checkInStatus,
                                 webhook: req.body,
                                 created: FieldValue.serverTimestamp(),
                               };
