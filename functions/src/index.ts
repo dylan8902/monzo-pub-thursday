@@ -132,7 +132,6 @@ const opts = {cors: true, maxInstances: 2};
  */
 export const webhook = onRequest(opts, async (req, res) => {
   logger.info("Hello logs!", req.body);
-  const db = admin.firestore();
 
   // Only process new transactions
   if (req.body.type != "transaction.created") {
@@ -141,9 +140,9 @@ export const webhook = onRequest(opts, async (req, res) => {
   }
 
   // Pull out useful information from webhook
-  const monzoName = req.body.data.merchant?.name;
-  const monzoLat = req.body.data.merchant?.address?.latitude;
-  const monzoLng = req.body.data.merchant?.address?.longitude;
+  const monzoName = req.body.data?.merchant?.name;
+  const monzoLat = req.body.data?.merchant?.address?.latitude;
+  const monzoLng = req.body.data?.merchant?.address?.longitude;
   if (monzoName === undefined) {
     bad("Missing data.merchant.name", req.body, res);
     return;
@@ -182,6 +181,7 @@ export const webhook = onRequest(opts, async (req, res) => {
     console.log(`Chosen ${locationId} as best match`);
 
     // Get Pub Thursday config
+    const db = admin.firestore();
     db.collection("configuration")
         .doc("pub-thursday")
         .get()
